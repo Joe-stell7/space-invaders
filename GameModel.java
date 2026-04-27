@@ -47,21 +47,30 @@ public class GameModel {
     private int tickCount;
 
     public GameModel() {
+        random = new Random();
+        alienBullets = new ArrayList<>();
+        resetGame();
+    }
+
+    public void resetGame() {
         playerX = (WIDTH - PLAYER_WIDTH) / 2;
+
         aliens = new boolean[ALIEN_ROWS][ALIEN_COLS];
         for (int row = 0; row < ALIEN_ROWS; row++) {
             for (int col = 0; col < ALIEN_COLS; col++) {
                 aliens[row][col] = true;
             }
         }
+
         alienOffsetX = 0;
         alienOffsetY = 0;
         alienDirection = 1;
+
         playerBullet = null;
-        alienBullets = new ArrayList<>();
+        alienBullets.clear();
+
         score = 0;
         lives = 3;
-        random = new Random();
         tickCount = 0;
     }
 
@@ -253,10 +262,10 @@ public class GameModel {
             }
         }
 
-        resetAliens();
+        resetAliensWave();
     }
 
-    private void resetAliens() {
+    private void resetAliensWave() {
         for (int row = 0; row < ALIEN_ROWS; row++) {
             for (int col = 0; col < ALIEN_COLS; col++) {
                 aliens[row][col] = true;
@@ -276,14 +285,6 @@ public class GameModel {
 
     public boolean[][] getAliens() {
         return aliens;
-    }
-
-    public int getAlienOffsetX() {
-        return alienOffsetX;
-    }
-
-    public int getAlienOffsetY() {
-        return alienOffsetY;
     }
 
     public Rectangle getPlayerBullet() {

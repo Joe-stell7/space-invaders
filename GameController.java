@@ -25,13 +25,10 @@ public class GameController implements KeyListener {
         frame.setVisible(true);
 
         timer = new Timer(16, e -> {
-            if (model.getLives() > 0) {
+            if (!model.isGameOver()) {
                 model.update();
-                view.repaint();
-            } else {
-                ((Timer) e.getSource()).stop();
-                view.repaint();
             }
+            view.repaint();
         });
 
         timer.start();
@@ -46,11 +43,15 @@ public class GameController implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (model.getLives() <= 0) {
+        int key = e.getKeyCode();
+
+        if (model.isGameOver()) {
+            if (key == KeyEvent.VK_R) {
+                model.resetGame();
+                view.repaint();
+            }
             return;
         }
-
-        int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
             model.movePlayerLeft();

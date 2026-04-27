@@ -26,7 +26,7 @@ public class GameView extends JPanel {
         drawAlienBullets(g);
         drawHud(g);
 
-        if (model.getLives() <= 0) {
+        if (model.isGameOver()) {
             drawGameOver(g);
         }
     }
@@ -84,15 +84,24 @@ public class GameView extends JPanel {
     }
 
     private void drawGameOver(Graphics g) {
-        String message = "GAME OVER";
-        Font font = new Font("Arial", Font.BOLD, 40);
-        g.setFont(font);
+        String message1 = "GAME OVER";
+        String message2 = "Press R to Restart";
+
+        Font font1 = new Font("Arial", Font.BOLD, 40);
+        Font font2 = new Font("Arial", Font.PLAIN, 24);
+
         g.setColor(Color.WHITE);
 
-        FontMetrics metrics = g.getFontMetrics(font);
-        int x = (getWidth() - metrics.stringWidth(message)) / 2;
-        int y = (getHeight() - metrics.getHeight()) / 2 + metrics.getAscent();
+        g.setFont(font1);
+        FontMetrics metrics1 = g.getFontMetrics(font1);
+        int x1 = (getWidth() - metrics1.stringWidth(message1)) / 2;
+        int y1 = getHeight() / 2 - 20;
+        g.drawString(message1, x1, y1);
 
-        g.drawString(message, x, y);
+        g.setFont(font2);
+        FontMetrics metrics2 = g.getFontMetrics(font2);
+        int x2 = (getWidth() - metrics2.stringWidth(message2)) / 2;
+        int y2 = y1 + 40;
+        g.drawString(message2, x2, y2);
     }
 }
