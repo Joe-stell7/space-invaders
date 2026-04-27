@@ -80,7 +80,7 @@ public class GameModel {
     }
 
     public void firePlayerBullet() {
-        if (playerBullet == null) {
+        if (playerBullet == null && lives > 0) {
             int bulletX = playerX + PLAYER_WIDTH / 2 - PLAYER_BULLET_WIDTH / 2;
             int bulletY = PLAYER_Y;
             playerBullet = new Rectangle(bulletX, bulletY, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT);
@@ -88,6 +88,10 @@ public class GameModel {
     }
 
     public void update() {
+        if (lives <= 0) {
+            return;
+        }
+
         tickCount++;
         movePlayerBullet();
         moveAliens();
@@ -95,6 +99,8 @@ public class GameModel {
         moveAlienBullets();
         checkPlayerBulletAlienCollisions();
         checkAlienBulletPlayerCollisions();
+        checkAliensReachedPlayer();
+        checkWaveCleared();
     }
 
     private void movePlayerBullet() {
@@ -217,8 +223,51 @@ public class GameModel {
             if (bullet.intersects(playerRect)) {
                 alienBullets.remove(i);
                 lives--;
+                if (lives < 0) {
+                    lives = 0;
+                }
             }
         }
+    }
+
+    private void checkAliensReachedPlayer() {
+        for (int row = 0; row < ALIEN_ROWS; row++) {
+            for (int col = 0; col < ALIEN_COLS; col++) {
+                if (aliens[row][col]) {
+                    int alienBottom = getAlienY(row) + ALIEN_HEIGHT;
+                    if (alienBottom >= PLAYER_Y) {
+                        lives = 0;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkWaveCleared() {
+        for (int row = 0; row < ALIEN_ROWS; row++) {
+            for (int col = 0; col < ALIEN_COLS; col++) {
+                if (aliens[row][col]) {
+                    return;
+                }
+            }
+        }
+
+        resetAliens();
+    }
+
+    private void resetAliens() {
+        for (int row = 0; row < ALIEN_ROWS; row++) {
+            for (int col = 0; col < ALIEN_COLS; col++) {
+                aliens[row][col] = true;
+            }
+        }
+
+        alienOffsetX = 0;
+        alienOffsetY = 0;
+        alienDirection = 1;
+        playerBullet = null;
+        alienBullets.clear();
     }
 
     public int getPlayerX() {
@@ -251,6 +300,10 @@ public class GameModel {
 
     public int getLives() {
         return lives;
+    }
+
+    public boolean isGameOver() {
+        return lives <= 0;
     }
 
     public int getAlienX(int col) {
