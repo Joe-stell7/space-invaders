@@ -7,7 +7,7 @@ public class GameController {
 
     public GameController() {
         model = new GameModel();
-        view = new GameView();
+        view = new GameView(model);
     }
 
     private void startGame() {
