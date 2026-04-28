@@ -26,3 +26,6 @@ In GameController.java, I added a paused field and update the keyboard handling 
 
 Prompt 8: Level Progression
 In GameModel.java, add a level field and update the wave reset logic so clearing all aliens starts the next level. Add methods or fields needed to increase alien movement speed or alien bullet frequency each level. In GameView.java, display the current level with the score and lives. Constraint: restarting the game must reset the level back to 1.
+
+Prompt 9: High Score Saving
+In GameModel.java, add a highScore field plus methods to load and save it. In GameController.java, call the save logic when the game ends and the current score beats the saved high score. In GameView.java, display the high score on screen. 

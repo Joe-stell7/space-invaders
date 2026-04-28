@@ -1,4 +1,9 @@
 import java.awt.Rectangle;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -36,6 +41,8 @@ public class GameModel {
     public static final int SHIELD_COLS = 6;
     public static final int SHIELD_START_Y = 430;
 
+    private static final String HIGH_SCORE_FILE = "highscore.txt";
+
     private int playerX;
     private boolean[][] aliens;
     private int alienOffsetX;
@@ -50,6 +57,7 @@ public class GameModel {
     private int score;
     private int lives;
     private int level;
+    private int highScore;
 
     private Random random;
     private int tickCount;
@@ -57,6 +65,7 @@ public class GameModel {
     public GameModel() {
         random = new Random();
         alienBullets = new ArrayList<>();
+        loadHighScore();
         resetGame();
     }
 
@@ -290,6 +299,7 @@ public class GameModel {
                         aliens[row][col] = false;
                         playerBullet = null;
                         score += 10;
+                        updateHighScoreIfNeeded();
                         return;
                     }
                 }
@@ -356,6 +366,35 @@ public class GameModel {
         alienBullets.clear();
     }
 
+    public void updateHighScoreIfNeeded() {
+        if (score > highScore) {
+            highScore = score;
+        }
+    }
+
+    public void saveHighScore() {
+        updateHighScoreIfNeeded();
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGH_SCORE_FILE))) {
+            writer.write(String.valueOf(highScore));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadHighScore() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_FILE))) {
+            String line = reader.readLine();
+            if (line != null) {
+                highScore = Integer.parseInt(line.trim());
+            } else {
+                highScore = 0;
+            }
+        } catch (IOException | NumberFormatException e) {
+            highScore = 0;
+        }
+    }
+
     public Rectangle getShieldBlockBounds(int shieldIndex, int row, int col) {
         int totalShieldWidth = SHIELD_COLS * SHIELD_BLOCK_SIZE;
         int spacing = (WIDTH - SHIELD_COUNT * totalShieldWidth) / (SHIELD_COUNT + 1);
@@ -396,6 +435,10 @@ public class GameModel {
 
     public int getLevel() {
         return level;
+    }
+
+    public int getHighScore() {
+        return highScore;
     }
 
     public boolean isGameOver() {
