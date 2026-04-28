@@ -24,3 +24,5 @@ In GameModel.java, add a field to store four shields and methods to initialize t
 Prompt 7: Prompt 7: Pause Feature
 In GameController.java, I added a paused field and update the keyboard handling so pressing P toggles pause and resume. In GameView.java, add logic to draw a centered PAUSED message when the game is paused. Constraint: when paused, the timer may keep firing, but the model must not update movement, bullets, score, or collisions.
 
+Prompt 8: Level Progression
+In GameModel.java, add a level field and update the wave reset logic so clearing all aliens starts the next level. Add methods or fields needed to increase alien movement speed or alien bullet frequency each level. In GameView.java, display the current level with the score and lives. Constraint: restarting the game must reset the level back to 1.

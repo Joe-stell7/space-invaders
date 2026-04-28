@@ -20,7 +20,6 @@ public class GameModel {
     public static final int ALIEN_V_GAP = 12;
     public static final int ALIEN_START_X = 80;
     public static final int ALIEN_START_Y = 60;
-    public static final int ALIEN_MOVE_STEP = 10;
     public static final int ALIEN_DROP_STEP = 20;
 
     public static final int PLAYER_BULLET_WIDTH = 4;
@@ -50,6 +49,7 @@ public class GameModel {
 
     private int score;
     private int lives;
+    private int level;
 
     private Random random;
     private int tickCount;
@@ -61,27 +61,14 @@ public class GameModel {
     }
 
     public void resetGame() {
-        playerX = (WIDTH - PLAYER_WIDTH) / 2;
-
-        aliens = new boolean[ALIEN_ROWS][ALIEN_COLS];
-        for (int row = 0; row < ALIEN_ROWS; row++) {
-            for (int col = 0; col < ALIEN_COLS; col++) {
-                aliens[row][col] = true;
-            }
-        }
-
-        initializeShields();
-
-        alienOffsetX = 0;
-        alienOffsetY = 0;
-        alienDirection = 1;
-
-        playerBullet = null;
-        alienBullets.clear();
-
         score = 0;
         lives = 3;
+        level = 1;
         tickCount = 0;
+        playerX = (WIDTH - PLAYER_WIDTH) / 2;
+        playerBullet = null;
+        alienBullets.clear();
+        resetAliensWave();
     }
 
     public void movePlayerLeft() {
@@ -136,6 +123,14 @@ public class GameModel {
         }
     }
 
+    private int getAlienMoveStep() {
+        return 10 + (level - 1) * 2;
+    }
+
+    private int getAlienFireChance() {
+        return Math.min(35 + (level - 1) * 5, 80);
+    }
+
     private void movePlayerBullet() {
         if (playerBullet != null) {
             playerBullet.y -= PLAYER_BULLET_SPEED;
@@ -146,15 +141,17 @@ public class GameModel {
     }
 
     private void moveAliens() {
-        if (shouldMoveAliensDown()) {
+        int moveStep = getAlienMoveStep();
+
+        if (shouldMoveAliensDown(moveStep)) {
             alienOffsetY += ALIEN_DROP_STEP;
             alienDirection *= -1;
         } else {
-            alienOffsetX += alienDirection * ALIEN_MOVE_STEP;
+            alienOffsetX += alienDirection * moveStep;
         }
     }
 
-    private boolean shouldMoveAliensDown() {
+    private boolean shouldMoveAliensDown(int moveStep) {
         int leftmost = Integer.MAX_VALUE;
         int rightmost = Integer.MIN_VALUE;
 
@@ -176,8 +173,8 @@ public class GameModel {
             return false;
         }
 
-        return (alienDirection > 0 && rightmost + ALIEN_MOVE_STEP >= WIDTH)
-                || (alienDirection < 0 && leftmost - ALIEN_MOVE_STEP <= 0);
+        return (alienDirection > 0 && rightmost + moveStep >= WIDTH)
+                || (alienDirection < 0 && leftmost - moveStep <= 0);
     }
 
     private void fireAlienBulletRandomly() {
@@ -185,7 +182,7 @@ public class GameModel {
             return;
         }
 
-        if (random.nextInt(100) >= 35) {
+        if (random.nextInt(100) >= getAlienFireChance()) {
             return;
         }
 
@@ -338,10 +335,12 @@ public class GameModel {
             }
         }
 
+        level++;
         resetAliensWave();
     }
 
     private void resetAliensWave() {
+        aliens = new boolean[ALIEN_ROWS][ALIEN_COLS];
         for (int row = 0; row < ALIEN_ROWS; row++) {
             for (int col = 0; col < ALIEN_COLS; col++) {
                 aliens[row][col] = true;
@@ -393,6 +392,10 @@ public class GameModel {
 
     public int getLives() {
         return lives;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public boolean isGameOver() {

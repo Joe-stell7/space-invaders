@@ -107,7 +107,8 @@ public class GameView extends JPanel {
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Score: " + model.getScore(), 20, 30);
-        g.drawString("Lives: " + model.getLives(), 680, 30);
+        g.drawString("Lives: " + model.getLives(), 200, 30);
+        g.drawString("Level: " + model.getLevel(), 350, 30);
     }
 
     private void drawPaused(Graphics g) {
