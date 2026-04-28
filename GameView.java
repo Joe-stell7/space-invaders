@@ -8,9 +8,15 @@ import java.util.List;
 
 public class GameView extends JPanel {
     private GameModel model;
+    private boolean paused;
 
     public GameView(GameModel model) {
         this.model = model;
+        this.paused = false;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
     }
 
     @Override
@@ -26,6 +32,10 @@ public class GameView extends JPanel {
         drawPlayerBullet(g);
         drawAlienBullets(g);
         drawHud(g);
+
+        if (paused && !model.isGameOver()) {
+            drawPaused(g);
+        }
 
         if (model.isGameOver()) {
             drawGameOver(g);
@@ -98,6 +108,20 @@ public class GameView extends JPanel {
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Score: " + model.getScore(), 20, 30);
         g.drawString("Lives: " + model.getLives(), 680, 30);
+    }
+
+    private void drawPaused(Graphics g) {
+        String message = "PAUSED";
+        Font font = new Font("Arial", Font.BOLD, 40);
+
+        g.setColor(Color.WHITE);
+        g.setFont(font);
+
+        FontMetrics metrics = g.getFontMetrics(font);
+        int x = (getWidth() - metrics.stringWidth(message)) / 2;
+        int y = getHeight() / 2;
+
+        g.drawString(message, x, y);
     }
 
     private void drawGameOver(Graphics g) {

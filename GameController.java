@@ -9,10 +9,12 @@ public class GameController implements KeyListener {
     private GameView view;
     private JFrame frame;
     private Timer timer;
+    private boolean paused;
 
     public GameController() {
         model = new GameModel();
         view = new GameView(model);
+        paused = false;
     }
 
     private void startGame() {
@@ -25,7 +27,7 @@ public class GameController implements KeyListener {
         frame.setVisible(true);
 
         timer = new Timer(16, e -> {
-            if (!model.isGameOver()) {
+            if (!model.isGameOver() && !paused) {
                 model.update();
             }
             view.repaint();
@@ -45,11 +47,24 @@ public class GameController implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
+        if (key == KeyEvent.VK_P && !model.isGameOver()) {
+            paused = !paused;
+            view.setPaused(paused);
+            view.repaint();
+            return;
+        }
+
         if (model.isGameOver()) {
             if (key == KeyEvent.VK_R) {
                 model.resetGame();
+                paused = false;
+                view.setPaused(false);
                 view.repaint();
             }
+            return;
+        }
+
+        if (paused) {
             return;
         }
 
