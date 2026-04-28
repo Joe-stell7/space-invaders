@@ -21,3 +21,6 @@ Create a separate file called ModelTester.java with a main method. It should cre
 Prompt 6: Defensive Shields
 In GameModel.java, add a field to store four shields and methods to initialize them and detect bullet collisions with them. In GameView.java, draw the shields on screen between the player and the aliens. Constraint: keep GameModel.java free of Swing imports, and make shields lose visible sections when hit by either player bullets or alien bullets.
 
+Prompt 7: Prompt 7: Pause Feature
+In GameController.java, I added a paused field and update the keyboard handling so pressing P toggles pause and resume. In GameView.java, add logic to draw a centered PAUSED message when the game is paused. Constraint: when paused, the timer may keep firing, but the model must not update movement, bullets, score, or collisions.
+
