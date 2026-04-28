@@ -22,6 +22,7 @@ public class GameView extends JPanel {
 
         drawPlayer(g);
         drawAliens(g);
+        drawShields(g);
         drawPlayerBullet(g);
         drawAlienBullets(g);
         drawHud(g);
@@ -54,6 +55,22 @@ public class GameView extends JPanel {
                             GameModel.ALIEN_WIDTH,
                             GameModel.ALIEN_HEIGHT
                     );
+                }
+            }
+        }
+    }
+
+    private void drawShields(Graphics g) {
+        boolean[][][] shields = model.getShields();
+        g.setColor(Color.CYAN);
+
+        for (int shield = 0; shield < GameModel.SHIELD_COUNT; shield++) {
+            for (int row = 0; row < GameModel.SHIELD_ROWS; row++) {
+                for (int col = 0; col < GameModel.SHIELD_COLS; col++) {
+                    if (shields[shield][row][col]) {
+                        Rectangle block = model.getShieldBlockBounds(shield, row, col);
+                        g.fillRect(block.x, block.y, block.width, block.height);
+                    }
                 }
             }
         }

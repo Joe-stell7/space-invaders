@@ -31,6 +31,12 @@ public class GameModel {
     public static final int ALIEN_BULLET_HEIGHT = 12;
     public static final int ALIEN_BULLET_SPEED = 6;
 
+    public static final int SHIELD_COUNT = 4;
+    public static final int SHIELD_BLOCK_SIZE = 8;
+    public static final int SHIELD_ROWS = 4;
+    public static final int SHIELD_COLS = 6;
+    public static final int SHIELD_START_Y = 430;
+
     private int playerX;
     private boolean[][] aliens;
     private int alienOffsetX;
@@ -39,6 +45,8 @@ public class GameModel {
 
     private Rectangle playerBullet;
     private List<Rectangle> alienBullets;
+
+    private boolean[][][] shields;
 
     private int score;
     private int lives;
@@ -61,6 +69,8 @@ public class GameModel {
                 aliens[row][col] = true;
             }
         }
+
+        initializeShields();
 
         alienOffsetX = 0;
         alienOffsetY = 0;
@@ -106,10 +116,24 @@ public class GameModel {
         moveAliens();
         fireAlienBulletRandomly();
         moveAlienBullets();
+        checkPlayerBulletShieldCollisions();
+        checkAlienBulletShieldCollisions();
         checkPlayerBulletAlienCollisions();
         checkAlienBulletPlayerCollisions();
         checkAliensReachedPlayer();
         checkWaveCleared();
+    }
+
+    private void initializeShields() {
+        shields = new boolean[SHIELD_COUNT][SHIELD_ROWS][SHIELD_COLS];
+
+        for (int shield = 0; shield < SHIELD_COUNT; shield++) {
+            for (int row = 0; row < SHIELD_ROWS; row++) {
+                for (int col = 0; col < SHIELD_COLS; col++) {
+                    shields[shield][row][col] = true;
+                }
+            }
+        }
     }
 
     private void movePlayerBullet() {
@@ -204,6 +228,58 @@ public class GameModel {
         }
     }
 
+    private void checkPlayerBulletShieldCollisions() {
+        if (playerBullet == null) {
+            return;
+        }
+
+        for (int shield = 0; shield < SHIELD_COUNT; shield++) {
+            for (int row = 0; row < SHIELD_ROWS; row++) {
+                for (int col = 0; col < SHIELD_COLS; col++) {
+                    if (shields[shield][row][col]) {
+                        Rectangle block = getShieldBlockBounds(shield, row, col);
+                        if (playerBullet.intersects(block)) {
+                            shields[shield][row][col] = false;
+                            playerBullet = null;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkAlienBulletShieldCollisions() {
+        for (int i = alienBullets.size() - 1; i >= 0; i--) {
+            Rectangle bullet = alienBullets.get(i);
+
+            for (int shield = 0; shield < SHIELD_COUNT; shield++) {
+                boolean hit = false;
+
+                for (int row = 0; row < SHIELD_ROWS; row++) {
+                    for (int col = 0; col < SHIELD_COLS; col++) {
+                        if (shields[shield][row][col]) {
+                            Rectangle block = getShieldBlockBounds(shield, row, col);
+                            if (bullet.intersects(block)) {
+                                shields[shield][row][col] = false;
+                                alienBullets.remove(i);
+                                hit = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (hit) {
+                        break;
+                    }
+                }
+
+                if (hit) {
+                    break;
+                }
+            }
+        }
+    }
+
     private void checkPlayerBulletAlienCollisions() {
         if (playerBullet == null) {
             return;
@@ -272,11 +348,23 @@ public class GameModel {
             }
         }
 
+        initializeShields();
+
         alienOffsetX = 0;
         alienOffsetY = 0;
         alienDirection = 1;
         playerBullet = null;
         alienBullets.clear();
+    }
+
+    public Rectangle getShieldBlockBounds(int shieldIndex, int row, int col) {
+        int totalShieldWidth = SHIELD_COLS * SHIELD_BLOCK_SIZE;
+        int spacing = (WIDTH - SHIELD_COUNT * totalShieldWidth) / (SHIELD_COUNT + 1);
+        int shieldX = spacing + shieldIndex * (totalShieldWidth + spacing);
+        int x = shieldX + col * SHIELD_BLOCK_SIZE;
+        int y = SHIELD_START_Y + row * SHIELD_BLOCK_SIZE;
+
+        return new Rectangle(x, y, SHIELD_BLOCK_SIZE, SHIELD_BLOCK_SIZE);
     }
 
     public int getPlayerX() {
@@ -293,6 +381,10 @@ public class GameModel {
 
     public List<Rectangle> getAlienBullets() {
         return alienBullets;
+    }
+
+    public boolean[][][] getShields() {
+        return shields;
     }
 
     public int getScore() {
