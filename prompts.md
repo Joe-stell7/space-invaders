@@ -17,3 +17,7 @@ Fill in GameController.java. Add keyboard controls so the player can move left a
 Prompt 5 — Basic model testing
 
 Create a separate file called ModelTester.java with a main method. It should create a GameModel, call its methods directly, and print PASS or FAIL for each check. Write tests for at least five behaviors: the player cannot move past the left or right edge, firing while a bullet is already in flight does nothing, a bullet that reaches the top is removed, destroying an alien increases the score, and losing all lives triggers the game-over state. No testing libraries — just plain Java.
+
+Prompt 6: Defensive Shields
+In GameModel.java, add a field to store four shields and methods to initialize them and detect bullet collisions with them. In GameView.java, draw the shields on screen between the player and the aliens. Constraint: keep GameModel.java free of Swing imports, and make shields lose visible sections when hit by either player bullets or alien bullets.
+
