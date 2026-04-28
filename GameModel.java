@@ -44,7 +44,6 @@ public class GameModel {
 
     private Rectangle playerBullet;
     private List<Rectangle> alienBullets;
-
     private boolean[][][] shields;
 
     private int score;
