@@ -22,10 +22,13 @@ Prompt 6: Defensive Shields
 In GameModel.java, add a field to store four shields and methods to initialize them and detect bullet collisions with them. In GameView.java, draw the shields on screen between the player and the aliens. Constraint: keep GameModel.java free of Swing imports, and make shields lose visible sections when hit by either player bullets or alien bullets.
 
 Prompt 7: Prompt 7: Pause Feature
-In GameController.java, I added a paused field and update the keyboard handling so pressing P toggles pause and resume. In GameView.java, add logic to draw a centered PAUSED message when the game is paused. Constraint: when paused, the timer may keep firing, but the model must not update movement, bullets, score, or collisions.
+In GameController.java, add a paused field and update the keyboard handling so pressing P toggles pause and resume. In GameView.java, add logic to draw a centered PAUSED message when the game is paused. Constraint: when paused, the timer may keep firing, but the model must not update movement, bullets, score, or collisions.
 
 Prompt 8: Level Progression
 In GameModel.java, add a level field and update the wave reset logic so clearing all aliens starts the next level. Add methods or fields needed to increase alien movement speed or alien bullet frequency each level. In GameView.java, display the current level with the score and lives. Constraint: restarting the game must reset the level back to 1.
 
 Prompt 9: High Score Saving
 In GameModel.java, add a highScore field plus methods to load and save it. In GameController.java, call the save logic when the game ends and the current score beats the saved high score. In GameView.java, display the high score on screen. 
+
+Prompt 10: Pause Hint HUD Text
+In GameView.java, update the HUD drawing method to display a text hint in the top-left area of the screen that tells the player Press P to Pause while the game is being played. Constraint: this prompt is visual only, so the change must stay in GameView.java and must not add new game states, new windows, controller logic, or model fields.

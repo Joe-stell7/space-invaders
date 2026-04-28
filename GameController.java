@@ -29,8 +29,6 @@ public class GameController implements KeyListener {
         timer = new Timer(16, e -> {
             if (!model.isGameOver() && !paused) {
                 model.update();
-            } else if (model.isGameOver()) {
-                model.saveHighScore();
             }
             view.repaint();
         });
@@ -58,7 +56,6 @@ public class GameController implements KeyListener {
 
         if (model.isGameOver()) {
             if (key == KeyEvent.VK_R) {
-                model.saveHighScore();
                 model.resetGame();
                 paused = false;
                 view.setPaused(false);

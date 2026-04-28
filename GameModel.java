@@ -1,9 +1,4 @@
 import java.awt.Rectangle;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -41,8 +36,6 @@ public class GameModel {
     public static final int SHIELD_COLS = 6;
     public static final int SHIELD_START_Y = 430;
 
-    private static final String HIGH_SCORE_FILE = "highscore.txt";
-
     private int playerX;
     private boolean[][] aliens;
     private int alienOffsetX;
@@ -65,7 +58,7 @@ public class GameModel {
     public GameModel() {
         random = new Random();
         alienBullets = new ArrayList<>();
-        loadHighScore();
+        highScore = 0;
         resetGame();
     }
 
@@ -118,6 +111,7 @@ public class GameModel {
         checkAlienBulletPlayerCollisions();
         checkAliensReachedPlayer();
         checkWaveCleared();
+        updateHighScoreIfNeeded();
     }
 
     private void initializeShields() {
@@ -369,29 +363,6 @@ public class GameModel {
     public void updateHighScoreIfNeeded() {
         if (score > highScore) {
             highScore = score;
-        }
-    }
-
-    public void saveHighScore() {
-        updateHighScoreIfNeeded();
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGH_SCORE_FILE))) {
-            writer.write(String.valueOf(highScore));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void loadHighScore() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_FILE))) {
-            String line = reader.readLine();
-            if (line != null) {
-                highScore = Integer.parseInt(line.trim());
-            } else {
-                highScore = 0;
-            }
-        } catch (IOException | NumberFormatException e) {
-            highScore = 0;
         }
     }
 

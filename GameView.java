@@ -110,6 +110,9 @@ public class GameView extends JPanel {
         g.drawString("Lives: " + model.getLives(), 160, 30);
         g.drawString("Level: " + model.getLevel(), 280, 30);
         g.drawString("High Score: " + model.getHighScore(), 400, 30);
+
+        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        g.drawString("Press P to Pause", 20, 55);
     }
 
     private void drawPaused(Graphics g) {
